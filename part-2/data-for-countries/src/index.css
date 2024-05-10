@@ -1,0 +1,21 @@
+.countries-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.countries-list p {
+  padding: 0;
+  margin: 0;
+}
+
+.countries-list li {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.country-data p {
+  padding: 0;
+  margin: 0;
+}
