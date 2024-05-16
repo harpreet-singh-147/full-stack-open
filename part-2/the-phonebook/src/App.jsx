@@ -43,14 +43,24 @@ const App = () => {
       ) {
         personsService
           .updateEntry(personExists.id, { ...personExists, number })
-          .then(data =>
+          .then(data => {
             setPersons(prevPersons =>
               prevPersons.map(person =>
                 person.id !== personExists.id ? person : data
               )
-            )
-          )
-          .catch(() => {
+            );
+            displayNotification(
+              `Updated number of ${personExists.name}`,
+              'success'
+            );
+            setNewName('');
+            setNumber('');
+          })
+          .catch(e => {
+            if (e.response.data.error) {
+              displayNotification(e.response.data.error, 'error');
+              return;
+            }
             displayNotification(
               `Information of ${personExists.name} has already been removed from server`,
               'error'
@@ -60,21 +70,10 @@ const App = () => {
             );
           });
 
-        displayNotification(
-          `Updated number of ${personExists.name}`,
-          'success'
-        );
-        setNewName('');
-        setNumber('');
         return;
       } else {
         return;
       }
-    }
-
-    if (personExists) {
-      alert(`${personExists.name} is already added to the phonebook`);
-      return;
     }
 
     personsService
@@ -82,11 +81,13 @@ const App = () => {
         name: newName,
         number,
       })
-      .then(data => setPersons(prev => [...prev, data]))
-      .catch(e => console.log(e.message));
-    displayNotification(`Added ${newName}`, 'success');
-    setNewName('');
-    setNumber('');
+      .then(data => {
+        setPersons(prev => [...prev, data]);
+        displayNotification(`Added ${newName}`, 'success');
+        setNewName('');
+        setNumber('');
+      })
+      .catch(e => displayNotification(e.response.data.error, 'error'));
   };
 
   const displayNotification = (message, type) => {
