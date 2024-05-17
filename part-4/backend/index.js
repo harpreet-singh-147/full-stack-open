@@ -5,7 +5,8 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const PORT = process.env.PORT;
+const config = require('./utils/config');
+const logger = require('./utils/logger');
 
 const requestLogger = (req, res, next) => {
   console.log('Method:', req.method);
@@ -114,6 +115,6 @@ const errorHandler = (e, req, res, next) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`);
 });
