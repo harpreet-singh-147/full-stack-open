@@ -12,6 +12,34 @@ const User = require('../models/user');
 
 const jwt = require('jsonwebtoken');
 
+const createUserAndLogin = async () => {
+  const newUser = {
+    username: process.env.TEST_USERNAME,
+    name: process.env.TEST_NAME,
+    password: process.env.TEST_PASSWORD,
+  };
+
+  await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const loginResponse = await api
+    .post('/api/login')
+    .send({
+      username: process.env.TEST_USERNAME,
+      password: process.env.TEST_PASSWORD,
+    })
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+
+  const token = loginResponse.body.token;
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+
+  return { token, decodedToken };
+};
+
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
@@ -72,29 +100,7 @@ describe('when there is initially some blogs saved', () => {
 
   describe('addition of a new blog', () => {
     test('a valid blog can be added', async () => {
-      const newUser = {
-        username: process.env.TEST_USERNAME,
-        name: process.env.TEST_NAME,
-        password: process.env.TEST_PASSWORD,
-      };
-
-      await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
-
-      const loginResponse = await api
-        .post('/api/login')
-        .send({
-          username: process.env.TEST_USERNAME,
-          password: process.env.TEST_PASSWORD,
-        })
-        .expect(200)
-        .expect('Content-Type', /application\/json/);
-
-      const token = loginResponse.body.token;
-      const decodedToken = jwt.verify(token, process.env.SECRET);
+      const { token, decodedToken } = await createUserAndLogin();
 
       const newBlog = {
         title: 'test blog from test file',
@@ -120,29 +126,7 @@ describe('when there is initially some blogs saved', () => {
 
   describe('blog fails with the proper status code', () => {
     test('401 Unauthorized if a token is not provided', async () => {
-      const newUser = {
-        username: process.env.TEST_USERNAME,
-        name: process.env.TEST_NAME,
-        password: process.env.TEST_PASSWORD,
-      };
-
-      await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
-
-      const loginResponse = await api
-        .post('/api/login')
-        .send({
-          username: process.env.TEST_USERNAME,
-          password: process.env.TEST_PASSWORD,
-        })
-        .expect(200)
-        .expect('Content-Type', /application\/json/);
-
-      const token = loginResponse.body.token;
-      const decodedToken = jwt.verify(token, process.env.SECRET);
+      const { decodedToken } = await createUserAndLogin();
 
       const newBlog = {
         title: 'test blog from test file',
@@ -163,29 +147,7 @@ describe('when there is initially some blogs saved', () => {
 
   describe('missing properties', () => {
     test('verify if likes property is missing from the request, it will default to 0', async () => {
-      const newUser = {
-        username: process.env.TEST_USERNAME,
-        name: process.env.TEST_NAME,
-        password: process.env.TEST_PASSWORD,
-      };
-
-      await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
-
-      const loginResponse = await api
-        .post('/api/login')
-        .send({
-          username: process.env.TEST_USERNAME,
-          password: process.env.TEST_PASSWORD,
-        })
-        .expect(200)
-        .expect('Content-Type', /application\/json/);
-
-      const token = loginResponse.body.token;
-      const decodedToken = jwt.verify(token, process.env.SECRET);
+      const { token, decodedToken } = await createUserAndLogin();
 
       const newBlogWithNoLikeProperty = {
         title: 'No likes',
@@ -205,29 +167,7 @@ describe('when there is initially some blogs saved', () => {
     });
 
     test('verify if title missing from the request data, backend responds with status code 400', async () => {
-      const newUser = {
-        username: process.env.TEST_USERNAME,
-        name: process.env.TEST_NAME,
-        password: process.env.TEST_PASSWORD,
-      };
-
-      await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
-
-      const loginResponse = await api
-        .post('/api/login')
-        .send({
-          username: process.env.TEST_USERNAME,
-          password: process.env.TEST_PASSWORD,
-        })
-        .expect(200)
-        .expect('Content-Type', /application\/json/);
-
-      const token = loginResponse.body.token;
-      const decodedToken = jwt.verify(token, process.env.SECRET);
+      const { token, decodedToken } = await createUserAndLogin();
 
       const newBlogWithNoTitleProperty = {
         author: 'No title property',
@@ -246,29 +186,7 @@ describe('when there is initially some blogs saved', () => {
     });
 
     test('verify if url missing from the request data, backend responds with status code 400', async () => {
-      const newUser = {
-        username: process.env.TEST_USERNAME,
-        name: process.env.TEST_NAME,
-        password: process.env.TEST_PASSWORD,
-      };
-
-      await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
-
-      const loginResponse = await api
-        .post('/api/login')
-        .send({
-          username: process.env.TEST_USERNAME,
-          password: process.env.TEST_PASSWORD,
-        })
-        .expect(200)
-        .expect('Content-Type', /application\/json/);
-
-      const token = loginResponse.body.token;
-      const decodedToken = jwt.verify(token, process.env.SECRET);
+      const { token, decodedToken } = await createUserAndLogin();
 
       const newBlogWithNoUrlProperty = {
         title: 'No author property',
@@ -315,29 +233,7 @@ describe('when there is initially some blogs saved', () => {
   describe('deleting a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
       const blogsAtStart = await helper.blogsInDb();
-      const newUser = {
-        username: process.env.TEST_USERNAME,
-        name: process.env.TEST_NAME,
-        password: process.env.TEST_PASSWORD,
-      };
-
-      await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
-
-      const loginResponse = await api
-        .post('/api/login')
-        .send({
-          username: process.env.TEST_USERNAME,
-          password: process.env.TEST_PASSWORD,
-        })
-        .expect(200)
-        .expect('Content-Type', /application\/json/);
-
-      const token = loginResponse.body.token;
-      const decodedToken = jwt.verify(token, process.env.SECRET);
+      const { token, decodedToken } = await createUserAndLogin();
 
       const newBlog = {
         title: 'test blog from test file',
