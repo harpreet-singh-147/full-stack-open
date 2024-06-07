@@ -28,10 +28,16 @@ blogsRouter.post('/', middleware.userExtractor, async (req, res) => {
   res.status(201).json(savedBlog);
 });
 
-blogsRouter.put('/:id', async (req, res) => {
-  const { title, author, url, likes } = req.body;
+blogsRouter.put('/:id', middleware.userExtractor, async (req, res) => {
+  let blog = await Blog.findById(req.params.id);
+  if (!blog) {
+    return res.status(404).json({ error: 'Blog not found' });
+  }
 
-  const blog = await Blog.findByIdAndUpdate(
+  const { title, author, url, likes } = req.body;
+  const user = req.user;
+
+  blog = await Blog.findByIdAndUpdate(
     req.params.id,
     { title, author, url, likes },
     {
@@ -40,7 +46,10 @@ blogsRouter.put('/:id', async (req, res) => {
       context: 'query',
     }
   );
-  res.json(blog);
+
+  user.likedBlogs = [...user.likedBlogs, blog._id];
+  await user.save();
+  res.status(200).json(blog);
 });
 
 blogsRouter.delete('/:id', middleware.userExtractor, async (req, res) => {
