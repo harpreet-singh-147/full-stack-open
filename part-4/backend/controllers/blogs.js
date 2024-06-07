@@ -45,7 +45,7 @@ blogsRouter.put('/:id', middleware.userExtractor, async (req, res) => {
       runValidators: true,
       context: 'query',
     }
-  );
+  ).populate('user', { username: 1, name: 1 });
 
   user.likedBlogs = [...user.likedBlogs, blog._id];
   await user.save();
