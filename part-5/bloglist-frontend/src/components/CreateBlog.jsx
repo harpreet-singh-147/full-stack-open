@@ -71,3 +71,5 @@ const CreateBlog = forwardRef(({ setBlogs, displayNotification }, refs) => {
   );
 });
 export default CreateBlog;
+
+CreateBlog.displayName = 'CreateBlog';
