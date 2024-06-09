@@ -59,17 +59,19 @@ const Blog = ({ blog, setBlogs, displayNotification }) => {
 
   return (
     <div style={blogStyle}>
-      <div>
+      <div className='blog__content'>
         {blog.title}{' '}
-        <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
+        <button onClick={toggleVisibility} className='blog__toggle-btn'>
+          {visible ? 'hide' : 'view'}
+        </button>
         <div style={showWhenVisible}>
-          <div>{blog.url}</div>
-          <div>
+          <div className='blog__url'>{blog.url}</div>
+          <div className='blog__likes'>
             {blog.likes}{' '}
             <button onClick={() => handleLikeClick(blog.id)}>like</button>
           </div>
           <div>{blog.author}</div>
-          {user.username === blog.user.username ? (
+          {user?.username === blog.user?.username ? (
             <button
               style={buttonStyle}
               onClick={() =>

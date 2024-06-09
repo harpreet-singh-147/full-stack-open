@@ -45,6 +45,7 @@ const CreateBlog = forwardRef(({ setBlogs, displayNotification }, refs) => {
             value={title}
             name='Title'
             onChange={e => setTitle(e.target.value)}
+            placeholder='enter blog title'
           />
         </div>
         <div>
@@ -54,6 +55,7 @@ const CreateBlog = forwardRef(({ setBlogs, displayNotification }, refs) => {
             value={author}
             name='Author'
             onChange={e => setAuthor(e.target.value)}
+            placeholder='enter blog author'
           />
         </div>
         <div>
@@ -63,6 +65,7 @@ const CreateBlog = forwardRef(({ setBlogs, displayNotification }, refs) => {
             value={url}
             name='Url'
             onChange={e => setUrl(e.target.value)}
+            placeholder='enter blog url'
           />
         </div>
         <button type='submit'>create</button>
