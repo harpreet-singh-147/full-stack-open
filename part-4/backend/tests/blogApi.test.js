@@ -207,6 +207,8 @@ describe('when there is initially some blogs saved', () => {
 
   describe('updating a blog', () => {
     test('updating the information of an individual blog post', async () => {
+      const { token } = await createUserAndLogin();
+
       const blogsAtStart = await helper.blogsInDb();
       const { id, title, author, url, likes } = blogsAtStart[0];
 
@@ -219,6 +221,7 @@ describe('when there is initially some blogs saved', () => {
 
       const res = await api
         .put(`/api/blogs/${id}`)
+        .set('Authorization', `Bearer ${token}`)
         .send(updatedBlog)
         .expect(200)
         .expect('Content-Type', /application\/json/);
