@@ -21,11 +21,15 @@ blogsRouter.post('/', middleware.userExtractor, async (req, res) => {
   const blog = new Blog({ ...req.body, user: user.id });
 
   const savedBlog = await blog.save();
+  const populatedBlog = await savedBlog.populate('user', {
+    username: 1,
+    name: 1,
+  });
 
   user.blogs = [...user.blogs, savedBlog._id];
   await user.save();
 
-  res.status(201).json(savedBlog);
+  res.status(201).json(populatedBlog);
 });
 
 blogsRouter.put('/:id', middleware.userExtractor, async (req, res) => {
