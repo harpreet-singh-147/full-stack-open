@@ -2,11 +2,7 @@ import { useState } from 'react';
 
 import blogService from '../services/blogs';
 
-const Blog = ({ blog, setBlogs, displayNotification }) => {
-  const [user] = useState(() => {
-    const savedUser = localStorage.getItem('loggedBlogAppUser');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+const Blog = ({ blog, setBlogs, displayNotification, user }) => {
   const [visible, setVisible] = useState(false);
 
   const blogStyle = {

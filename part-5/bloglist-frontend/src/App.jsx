@@ -20,7 +20,13 @@ const App = () => {
   const createBlogRef = useRef(null);
 
   useEffect(() => {
-    blogService.getAll().then(blogs => setBlogs(blogs));
+    blogService
+      .getAll()
+      .then(blogs => setBlogs(blogs))
+      .catch(e => {
+        console.log(e);
+        displayNotification(`${e.response.data.error}`, 'error');
+      });
   }, []);
 
   useEffect(() => {
@@ -86,6 +92,7 @@ const App = () => {
               blog={blog}
               setBlogs={setBlogs}
               displayNotification={displayNotification}
+              user={user}
             />
           ))}
         </>

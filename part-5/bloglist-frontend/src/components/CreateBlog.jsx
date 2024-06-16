@@ -19,7 +19,8 @@ const CreateBlog = forwardRef(({ setBlogs, displayNotification }, refs) => {
     try {
       const res = await blogService.create({ title, author, url });
 
-      setBlogs(prevBlogs => [res, ...prevBlogs]);
+      setBlogs(prevBlogs => [...prevBlogs, res]);
+
       displayNotification(
         `a new blog ${res.title} by ${res.author} added`,
         'success'
@@ -46,6 +47,7 @@ const CreateBlog = forwardRef(({ setBlogs, displayNotification }, refs) => {
             name='Title'
             onChange={e => setTitle(e.target.value)}
             placeholder='enter blog title'
+            data-testid='titleInput'
           />
         </div>
         <div>
@@ -56,6 +58,7 @@ const CreateBlog = forwardRef(({ setBlogs, displayNotification }, refs) => {
             name='Author'
             onChange={e => setAuthor(e.target.value)}
             placeholder='enter blog author'
+            data-testid='authorInput'
           />
         </div>
         <div>
@@ -66,6 +69,7 @@ const CreateBlog = forwardRef(({ setBlogs, displayNotification }, refs) => {
             name='Url'
             onChange={e => setUrl(e.target.value)}
             placeholder='enter blog url'
+            data-testid='urlInput'
           />
         </div>
         <button type='submit'>create</button>
