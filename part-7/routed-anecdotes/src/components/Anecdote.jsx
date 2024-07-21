@@ -1,5 +1,4 @@
 const Anecdote = ({ anecdote }) => {
-  console.log(anecdote);
   return (
     <>
       <h2>
